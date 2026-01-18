@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win",
-    "dev": "nodemon ./backend/server.cjs",
+    "dev": "nodemon server.cjs",
     "start-server": "node server.cjs",
     "init-db": "node scripts/init_db.js",
     "dist": "electron-builder"
