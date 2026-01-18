@@ -272,28 +272,36 @@ const ProtectedLayout = () => {
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(authApi.isAuthenticated());
 
-  useEffect(() => {
-    const checkAuth = () => setIsAuthenticated(authApi.isAuthenticated());
-    window.addEventListener('storage', checkAuth);
-    checkAuth();
-    return () => window.removeEventListener('storage', checkAuth);
-  }, []);
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    authApi.logout();
+    setIsAuthenticated(false);
+  };
 
   return (
     <div className="app">
-      <Routes>
-        {!isAuthenticated && (
-          <>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </>
-        )}
-        {isAuthenticated && <Route path="/*" element={<ProtectedLayout />} />}
-        <Route path="/logout" element={<Logout />} />
-      </Routes>
+<Routes>
+  {!isAuthenticated && (
+    <>
+      <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </>
+  )}
+  {isAuthenticated && (
+    <>
+      <Route path="/*" element={<ProtectedLayout />} />
+      <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
+    </>
+  )}
+</Routes>
+
     </div>
   );
 };
+
 
 export default App;

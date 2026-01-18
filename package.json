@@ -5,9 +5,11 @@
   "author": "Yassine Khiari",
   "main": "main.js",
   "scripts": {
-    "start": "node server.cjs ",
+    "start": "node server.cjs",
+    "dev": "nodemon server.cjs",
     "init-db": "node scripts/init_db.js",
-    "dist": "electron-builder"
+    "build": "electron-builder",
+    "dist": "electron-builder --publish=never"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -30,6 +32,26 @@
     "electron-builder": "^26.4.0",
     "nodemon": "^3.1.11",
     "sequelize-cli": "^6.6.5"
+  },
+  "build": {
+    "appId": "com.yassine.stockmanagement",
+    "productName": "Stock Management",
+    "directories": {
+      "output": "dist_electron",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "frontend/dist/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/logo.ico"
+    }
   }
-
 }

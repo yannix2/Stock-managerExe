@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../api/stockApi';
 import './Login.css';
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -35,15 +35,21 @@ const Login = () => {
     }
 
     try {
+      // Call Railway backend via authApi
       const response = await authApi.login(credentials);
-      console.log('Connexion réussie:', response);
-      
-      // Rediriger vers le dashboard
-      navigate('/dashboard', { replace: true });
-      
-      // Rafraîchir la page pour mettre à jour l'état d'authentification
-      window.location.reload();
-      
+
+      if (response.token) {
+        // Store token in localStorage or wherever authApi expects
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        // Notify App.jsx that login succeeded
+        if (onLoginSuccess) onLoginSuccess();
+
+        // Redirect to dashboard
+        navigate('/dashboard', { replace: true });
+      } else {
+        setError(response.error || 'Identifiants invalides');
+      }
     } catch (err) {
       console.error('Erreur de connexion:', err);
       setError(err.message || 'Erreur lors de la connexion. Veuillez réessayer.');
@@ -67,18 +73,12 @@ const Login = () => {
             Connectez-vous à votre compte
           </p>
         </div>
-        
+
         <form className="login-form" onSubmit={handleSubmit}>
-          {error && (
-            <div className="login-error">
-              {error}
-            </div>
-          )}
-          
+          {error && <div className="login-error">{error}</div>}
+
           <div className="form-group">
-            <label htmlFor="username">
-              Nom d'utilisateur
-            </label>
+            <label htmlFor="username">Nom d'utilisateur</label>
             <input
               id="username"
               name="username"
@@ -90,11 +90,9 @@ const Login = () => {
               placeholder="Entrez votre nom d'utilisateur"
             />
           </div>
-          
+
           <div className="form-group">
-            <label htmlFor="password">
-              Mot de passe
-            </label>
+            <label htmlFor="password">Mot de passe</label>
             <input
               id="password"
               name="password"
@@ -106,11 +104,9 @@ const Login = () => {
               placeholder="Entrez votre mot de passe"
             />
           </div>
-          
+
           <div className="form-group">
-            <label htmlFor="CodeSecret">
-              Code Secret
-            </label>
+            <label htmlFor="CodeSecret">Code Secret</label>
             <input
               id="CodeSecret"
               name="CodeSecret"
@@ -130,7 +126,7 @@ const Login = () => {
           >
             {loading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
-          
+
           <div className="login-links">
             <p>
               Pas encore de compte ?{' '}

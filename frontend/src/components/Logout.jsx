@@ -1,29 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { authApi } from '../api/stockApi';
 
-const Logout = () => {
+const Logout = ({ onLogout }) => {
   useEffect(() => {
-    // Déconnexion propre
-    authApi.logout();
-    
-    // Nettoyer les données en mémoire si nécessaire
-    localStorage.clear();
-    
-    // Rafraîchir pour s'assurer que tout est nettoyé
-    setTimeout(() => {
-      window.location.href = '/login';
-    }, 100);
-  }, []);
+    authApi.logout();       // remove token from localStorage
+    if (onLogout) onLogout(); // update App.jsx state
+  }, [onLogout]);
 
-  return (
-    <div className="logout-container">
-      <div className="logout-message">
-        <h2>Déconnexion...</h2>
-        <p>Vous allez être redirigé vers la page de connexion.</p>
-      </div>
-    </div>
-  );
+  return <Navigate to="/login" replace />;
 };
 
 export default Logout;

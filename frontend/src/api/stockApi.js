@@ -9,7 +9,7 @@ const API_URL =
   window.electronAPI &&
   typeof window.electronAPI.getApiUrl === 'function'
     ? window.electronAPI.getApiUrl()
-    : 'http://127.0.0.1:3000/api';
+    : 'https://stockmanager.up.railway.app/api';
 
 // Generic fetch helper
 const fetchWithErrorHandling = async (endpoint, options = {}) => {
