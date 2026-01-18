@@ -5,7 +5,7 @@
   "author": "Yassine Khiari",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "node server.cjs ",
     "dev": "nodemon server.cjs",
     "start-server": "node server.cjs",
     "init-db": "node scripts/init_db.js",
