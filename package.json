@@ -1,0 +1,94 @@
+{
+  "name": "stock-management",
+  "version": "1.0.0",
+  "description": "Stock management desktop app with React + Electron",
+  "author": "Yassine Khiari",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "dev": "nodemon ./backend/server.cjs",
+    "start-server": "node server.cjs",
+    "init-db": "node scripts/init_db.js",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "number-to-words": "^1.2.4",
+    "pdf-lib": "^1.17.1",
+    "pdfkit": "^0.17.2",
+    "puppeteer": "^24.35.0",
+    "qrcode": "^1.5.4",
+    "sequelize": "^6.37.1",
+    "sharp": "^0.34.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^26.4.0",
+    "nodemon": "^3.1.11",
+    "sequelize-cli": "^6.6.5"
+  },
+  "build": {
+    "appId": "com.yassine.stockmanagement",
+    "productName": "stock-management",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "dist/**/*",
+      "backend/**/*",
+      "db/**/*",
+      "package.json",
+      "**/*.cjs"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/",
+        "to": "backend/",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "db/",
+        "to": "db/"
+      },
+      {
+        "from": "node_modules/sqlite3/build/Release/sqlite3.node",
+        "to": "sqlite3.node"
+      }
+    ],
+    "asarUnpack": [
+      "backend/**/*",
+      "db/**/*",
+      "node_modules/sqlite3/build/Release/*.node"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "stock-management-portable.exe"
+    }
+  }
+}

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title><%= invoice.type === 'invoice' ? 'Facture' : 'Devis' %> <%= invoice_number %></title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #333;
+      line-height: 1.5;
+      background: #fff;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 25mm 20mm;
+      position: relative;
+    }
+    
+    /* Header Section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #0a66a0;
+    }
+    
+    .company-info {
+      flex: 1;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #0a66a0, #2e8bc0);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+      margin-right: 15px;
+      box-shadow: 0 3px 10px rgba(10, 102, 160, 0.2);
+    }
+    
+    .company-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0a66a0;
+      letter-spacing: -0.5px;
+    }
+    
+    .company-sub {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    
+    .company-details {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .invoice-header {
+      text-align: right;
+    }
+    
+    .invoice-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0a66a0;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .invoice-meta {
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #0a66a0;
+    }
+    
+    .invoice-number {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0a66a0;
+      margin-bottom: 5px;
+    }
+    
+    .invoice-date {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .invoice-validity {
+      font-size: 12px;
+      color: #888;
+      font-style: italic;
+    }
+    
+    /* Customer Section */
+    .customer-section {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border: 1px solid #e1e8f0;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0a66a0;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .customer-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .customer-field {
+      margin-bottom: 8px;
+    }
+    
+    .customer-label {
+      font-weight: 600;
+      color: #555;
+      display: inline-block;
+      width: 80px;
+    }
+    
+    .customer-value {
+      color: #333;
+    }
+    
+    /* Products Table */
+    .table-container {
+      margin-bottom: 30px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #0a66a0, #2e8bc0);
+    }
+    
+    th {
+      padding: 16px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: white;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+    }
+    
+    th:first-child {
+      border-radius: 8px 0 0 0;
+    }
+    
+    th:last-child {
+      border-radius: 0 8px 0 0;
+    }
+    
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #e1e8f0;
+      color: #444;
+    }
+    
+    tbody tr:hover {
+      background-color: #f8fafc;
+    }
+    
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .total-column {
+      font-weight: 600;
+      color: #0a66a0;
+    }
+    
+    /* Totals Section */
+    .totals-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 40px;
+    }
+    
+    .totals-box {
+      width: 300px;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #e1e8f0;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #ddd;
+    }
+    
+    .total-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .total-label {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .total-value {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .total-ttc .total-label {
+      color: #0a66a0;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .total-ttc .total-value {
+      color: #0a66a0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    /* Signature Section */
+    .signature-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+      margin-top: 40px;
+    }
+    
+    .signature-box {
+      padding: 20px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    
+    .signature-title {
+      font-weight: 600;
+      color: #0a66a0;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    
+    .signature-subtitle {
+      font-size: 11px;
+      color: #888;
+      margin-top: auto;
+    }
+    
+    /* Footer */
+    .footer {
+      position: absolute;
+      bottom: 25mm;
+      left: 20mm;
+      right: 20mm;
+      padding-top: 20px;
+      border-top: 2px solid #e1e8f0;
+      text-align: center;
+    }
+    
+    .footer-content {
+      font-size: 10px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .company-contact {
+      margin-bottom: 8px;
+    }
+    
+    .thank-you {
+      color: #0a66a0;
+      font-weight: 600;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+    
+    .footer-note {
+      font-size: 9px;
+      color: #888;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    
+    /* Responsive */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+      }
+      .page {
+        margin: 0;
+        padding: 15mm;
+        box-shadow: none;
+      }
+      .footer {
+        position: fixed;
+        bottom: 15mm;
+      }
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 10px;
+    }
+    
+    .status-invoice {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-quote {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    
+    <!-- Header Section -->
+    <div class="header">
+      <div class="company-info">
+        <div class="logo-container">
+            <div class="logo">SE</div>
+          <div>
+            <div class="company-name">STE Espoir</div>
+            <div class="company-sub">Vente pièces de rechange auto</div>
+          </div>
+        </div>
+        <div class="company-details">
+          <div>21 rue Cyrus le Grand, Tunis, Tunisia</div>
+          <div>Tél: +216 54 750 100 | Email: contact@espoir.tn</div>
+        </div>
+      </div>
+      
+      <div class="invoice-header">
+       <div class="invoice-title">
+  <%= invoice.type === 'invoice' ? 'FACTURE' : 'DEVIS' %>
+
+  <% if (invoice.type === 'invoice') { %>
+    <span class="status-badge status-invoice">
+      <%= invoice.status === 'paid' ? 'Payé' : 'En attente' %>
+    </span>
+  <% } %>
+</div>
+
+        <div class="invoice-meta">
+          <div class="invoice-number">N°: <%= invoice_number %></div>
+          <div class="invoice-date">Date: <%= invoice_date %></div>
+          <% if (invoice.type === 'devis') { %>
+            <div class="invoice-validity">Validité: 30 jours à compter de la date d'émission</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Customer Section -->
+    <div class="customer-section">
+      <div class="section-title">Informations client</div>
+      <div class="customer-info">
+        <div>
+          <div class="customer-field">
+            <span class="customer-label">Nom:</span>
+            <span class="customer-value"><%= invoice.Customer.name %></span>
+          </div>
+          <div class="customer-field">
+            <span class="customer-label">Téléphone:</span>
+            <span class="customer-value"><%= invoice.Customer.phone || 'Non renseigné' %></span>
+          </div>
+        </div>
+        <div>
+          <div class="customer-field">
+            <span class="customer-label">Adresse:</span>
+            <span class="customer-value"><%= invoice.Customer.address || 'Non renseignée' %></span>
+          </div>
+          <% if (invoice.Customer.email) { %>
+            <div class="customer-field">
+              <span class="customer-label">Email:</span>
+              <span class="customer-value"><%= invoice.Customer.email %></span>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Products Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Désignation</th>
+            <th>Référence</th>
+            <th>Quantité</th>
+            <th>Prix unitaire (TND)</th>
+            <th>Total (TND)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(p => { %>
+            <tr>
+              <td><%= p.name %></td>
+              <td><%= p.ref || '-' %></td>
+              <td><%= p.qty %></td>
+              <td><%= parseFloat(p.unit_price).toFixed(3) %></td>
+              <td class="total-column"><%= parseFloat(p.total).toFixed(3) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Totals Section -->
+    <div class="totals-section">
+      <div class="totals-box">
+        <div class="total-row">
+          <span class="total-label">Total HT:</span>
+          <span class="total-value"><%= parseFloat(totalHT).toFixed(3) %> TND</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">TVA 19%:</span>
+          <span class="total-value"><%= parseFloat(tva).toFixed(3) %> TND</span>
+        </div>
+        <div class="total-row total-ttc">
+          <span class="total-label">Total TTC:</span>
+          <span class="total-value"><%= parseFloat(totalTTC).toFixed(3) %> TND</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Signature Section -->
+    <div class="signature-section">
+      <div class="signature-box">
+        <div class="signature-title">Cachet & Signature</div>
+      </div>
+      <div class="signature-box">
+        <div class="signature-title">Signature</div>
+        <div class="signature-subtitle">Le Client</div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-content">
+        <div class="company-contact">
+          STE Espoir - Vente pièces de rechange auto | 21 rue Cyrus le Grand, Tunis, Tunisia | 
+          Tél: +216 54 750 100 | Email: contact@espoir.tn
+        </div>
+        <div class="than    k-you">Merci pour votre confiance et à bientôt !</div>
+        <div class="footer-note">
+          Document généré le <%= new Date().toISOString().split('T')[0] %> 
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>
