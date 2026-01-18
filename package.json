@@ -6,7 +6,6 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win",
     "dev": "nodemon server.cjs",
     "start-server": "node server.cjs",
     "init-db": "node scripts/init_db.js",
@@ -33,62 +32,6 @@
     "electron-builder": "^26.4.0",
     "nodemon": "^3.1.11",
     "sequelize-cli": "^6.6.5"
-  },
-  "build": {
-    "appId": "com.yassine.stockmanagement",
-    "productName": "stock-management",
-    "directories": {
-      "buildResources": "assets",
-      "output": "dist"
-    },
-    "files": [
-      "main.js",
-      "preload.cjs",
-      "dist/**/*",
-      "backend/**/*",
-      "db/**/*",
-      "package.json",
-      "**/*.cjs"
-    ],
-    "extraResources": [
-      {
-        "from": "backend/",
-        "to": "backend/",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "db/",
-        "to": "db/"
-      },
-      {
-        "from": "node_modules/sqlite3/build/Release/sqlite3.node",
-        "to": "sqlite3.node"
-      }
-    ],
-    "asarUnpack": [
-      "backend/**/*",
-      "db/**/*",
-      "node_modules/sqlite3/build/Release/*.node"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "portable": {
-      "artifactName": "stock-management-portable.exe"
-    }
   }
+
 }
